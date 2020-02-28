@@ -30,6 +30,8 @@ typedef struct{
     int direction;
 }SORTABLE_DOT;
 
+int counter;
+
 void first(DOT**,int,int,int);
 void second(DOT**,int,int,int);
 void third(DOT**,int,int,int);
@@ -109,12 +111,16 @@ void first(DOT** matrix,int n, int x, int y){
     
     auto start1 = chrono::high_resolution_clock::now();
     
+    counter = 0;
+    
     simpleBacktrack(matrix, n, x, y);
     
     auto stop1 = chrono::high_resolution_clock::now();
     chrono::duration<double> myTime1 = stop1 - start1;
     
-    cout << "Simple Backtrack: " << myTime1.count() << endl;
+    cout << "Simple Backtrack: " << endl;
+    cout << "Counter: " << counter << endl;
+    cout << "Time: " << myTime1.count() << endl << endl;
     
 }
 
@@ -123,6 +129,8 @@ void second(DOT** matrix,int n,int x,int y){
     
     auto start1 = chrono::high_resolution_clock::now();
     
+    counter = 0;
+    
     frwdchecking(matrix,n,x, y);
     myMVR(matrix, n, x, y);
     frwdBacktrack(matrix, n, x, y);
@@ -130,13 +138,17 @@ void second(DOT** matrix,int n,int x,int y){
     auto stop1 = chrono::high_resolution_clock::now();
     chrono::duration<double> myTime1 = stop1 - start1;
     
-    cout << "Backtrack + MVR + Forward Checking: " << myTime1.count() << endl;
+    cout << "Backtrack + MVR + Forward Checking:" << endl;
+    cout << "Counter: " << counter << endl;
+    cout << "Time: " << myTime1.count() << endl << endl;
 }
 
 // Third method with MVR + AC-3
 void third(DOT** matrix,int n,int x,int y){
     
     auto start1 = chrono::high_resolution_clock::now();
+    
+    counter = 0;
     
     AC3(matrix, n);
     myMVR(matrix, n, x, y);
@@ -145,7 +157,9 @@ void third(DOT** matrix,int n,int x,int y){
     auto stop1 = chrono::high_resolution_clock::now();
     chrono::duration<double> myTime1 = stop1 - start1;
     
-    cout << "Backtrack + MVR + AC-3: " << myTime1.count() << endl;
+    cout << "Backtrack + MVR + AC-3: " << endl;
+    cout << "Counter: " << counter << endl;
+    cout << "Time: " << myTime1.count() << endl << endl;
 }
 
 // Checking if the point is success.
@@ -171,13 +185,14 @@ bool isSide(int n, int x, int y){
 bool simpleBacktrack(DOT** matrix,int n,int x, int y){
     
     if(isSide(n,x,y)){
-        printMtx(matrix, n, x, y);
+        //printMtx(matrix, n, x, y);
         return true;
     }
     
     for(int i = 0; i < 4; ++i){
         bool result = false;
         if(matrix[x][y].direction[matrix[x][y].order[i]]==1){
+            counter++;
             switch(matrix[x][y].order[i]){
                 case 0:
                     if(matrix[x][y].value > matrix[x-1][y].value){
@@ -202,7 +217,7 @@ bool simpleBacktrack(DOT** matrix,int n,int x, int y){
             }
         }
         if(result){
-            printMtx(matrix, n, x, y);
+            //printMtx(matrix, n, x, y);
             return true;
         }
         
@@ -214,7 +229,7 @@ bool simpleBacktrack(DOT** matrix,int n,int x, int y){
 bool frwdBacktrack(DOT** matrix,int n,int x, int y){
     
     if(isSide(n,x,y)){
-        printMtx(matrix, n, x, y);
+        //printMtx(matrix, n, x, y);
         return true;
     }
     
@@ -236,6 +251,7 @@ bool frwdBacktrack(DOT** matrix,int n,int x, int y){
     for(int i = 0; i < 4; ++i){
         bool result = false;
         if(matrix[x][y].direction[matrix[x][y].order[i]]==1){
+            counter++;
             switch(matrix[x][y].order[i]){
                 case 0:
                     result = frwdBacktrack(matrix,n, x-1, y);
@@ -253,7 +269,7 @@ bool frwdBacktrack(DOT** matrix,int n,int x, int y){
         }
         
         if(result){
-            printMtx(matrix, n, x, y);
+            //printMtx(matrix, n, x, y);
             return true;
         }
         
@@ -265,7 +281,7 @@ bool frwdBacktrack(DOT** matrix,int n,int x, int y){
 bool ac3Backtrack(DOT** matrix,int n,int x, int y){
     
     if(isSide(n,x,y)){
-        printMtx(matrix, n, x, y);
+        //printMtx(matrix, n, x, y);
         return true;
     }
 
@@ -275,6 +291,7 @@ bool ac3Backtrack(DOT** matrix,int n,int x, int y){
     for(int i = 0; i < 4; ++i){
         bool result = false;
         if(matrix[x][y].direction[matrix[x][y].order[i]]==1){
+            counter++;
             switch(matrix[x][y].order[i]){
                 case 0:
                     result = ac3Backtrack(matrix,n, x-1, y);
@@ -292,7 +309,7 @@ bool ac3Backtrack(DOT** matrix,int n,int x, int y){
         }
         
         if(result){
-            printMtx(matrix, n, x, y);
+            //printMtx(matrix, n, x, y);
             return true;
         }
         

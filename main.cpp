@@ -16,13 +16,15 @@
 
 using namespace std;
 
+/// Each position in the matrix is a dot.
 typedef struct{
     int value;
-    int possibilities = 4;
-    int direction[4] = {1,1,1,1};
-    int order[4] = {0,1,2,3};
+    int possibilities = 4; // Number of possible directions.
+    int direction[4] = {1,1,1,1}; // {up,right,down,left} | flags
+    int order[4] = {0,1,2,3}; // The order in wich the directions are applied.
     }DOT;
 
+/// Sortable dot
 typedef struct{
     DOT* dot;
     int direction;
@@ -31,25 +33,20 @@ typedef struct{
 void first(DOT**,int,int,int);
 void second(DOT**,int,int,int);
 void third(DOT**,int,int,int);
-
 bool simpleBacktrack(DOT**,int,int,int);
 bool frwdBacktrack(DOT**,int,int,int);
 bool ac3Backtrack(DOT**,int,int,int);
-
 void myMVR(DOT**,int,int,int);
-
 void frwdchecking(DOT**,int,int,int);
-
 void AC3(DOT**,int);
-
 void printMtx(DOT**,int, int, int);
-
 bool isSide(int,int,int);
-
 int mycmp(const void*, const void*);
 
 int main(int argc, const char * argv[]) {
     
+    // NxN size of matrix
+    // x and y are the starting coordinates.
     int n,x,y;
     
     ifstream input;
@@ -73,8 +70,13 @@ int main(int argc, const char * argv[]) {
     input >> x;
     input >> y;
     
+    // First method with simple backtracking
     first(matrix,n,x,y);
+    
+    // Second method with MVR + Forward Checking
     second(matrix,n,x,y);
+    
+    // Third method with MVR + AC-3
     third(matrix, n, x, y);
     
     /// Clearing memory
@@ -83,7 +85,6 @@ int main(int argc, const char * argv[]) {
     }
     
     delete [] matrix;
-    
     
     return 0;
 }
@@ -103,6 +104,7 @@ void printMtx(DOT** matrix,int n, int x, int y){
     }
 }
 
+// First method with simple backtracking
 void first(DOT** matrix,int n, int x, int y){
     
     auto start1 = chrono::high_resolution_clock::now();
@@ -116,7 +118,7 @@ void first(DOT** matrix,int n, int x, int y){
     
 }
 
-
+// Second method with MVR + Forward Checking
 void second(DOT** matrix,int n,int x,int y){
     
     auto start1 = chrono::high_resolution_clock::now();
@@ -131,6 +133,7 @@ void second(DOT** matrix,int n,int x,int y){
     cout << "Backtrack + MVR + Forward Checking: " << myTime1.count() << endl;
 }
 
+// Third method with MVR + AC-3
 void third(DOT** matrix,int n,int x,int y){
     
     auto start1 = chrono::high_resolution_clock::now();
@@ -145,6 +148,7 @@ void third(DOT** matrix,int n,int x,int y){
     cout << "Backtrack + MVR + AC-3: " << myTime1.count() << endl;
 }
 
+// Checking if the point is success.
 bool isSide(int n, int x, int y){
     
     if(x == 0){
@@ -297,7 +301,7 @@ bool ac3Backtrack(DOT** matrix,int n,int x, int y){
     return false;
 }
 
-
+// Orders the direction based on the neighbouring points' possible moves.
 void myMVR(DOT** matrix,int n,int x,int y){
     
     SORTABLE_DOT neighbours[4];
@@ -322,7 +326,7 @@ void myMVR(DOT** matrix,int n,int x,int y){
 
 }
 
-
+// Auxiliary method for Q sort
 int mycmp(const void* a, const void* b){
     const SORTABLE_DOT* x = (SORTABLE_DOT*)a;
     const SORTABLE_DOT* y = (SORTABLE_DOT*)b;
@@ -336,7 +340,7 @@ int mycmp(const void* a, const void* b){
      return 0;
 }
 
-
+// Forward Checking...
 void frwdchecking(DOT** matrix,int n,int x,int y){
     
     if(!isSide(n, x, y)){
@@ -362,6 +366,9 @@ void frwdchecking(DOT** matrix,int n,int x,int y){
 
 }
 
+// AC-3
+/// Because there is no possible way of going backwards there would be no inconsystencies
+/// after single iteration of the method.
 void AC3(DOT** matrix,int n){
     
     for(int i = 0; i < n; ++i){
